@@ -8,10 +8,8 @@ export default function two_crystal_balls(breaks: boolean[]): number {
             break;
         }
     }
-
     for (let x = b1 - d; x < b1; ++x) {
         if (breaks[x]) return x;
     }
-
     return -1;
 }
