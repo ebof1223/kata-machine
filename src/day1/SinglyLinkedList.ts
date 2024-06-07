@@ -55,7 +55,7 @@ export default class SinglyLinkedList<T> {
                 let next = current?.next;
                 current!.next = node;
                 node.next = next;
-                ++length;
+                ++this.length;
                 return;
             }
             ++count;
@@ -76,30 +76,79 @@ export default class SinglyLinkedList<T> {
     }
     remove(item: T): T | undefined {
         let current = this.head;
-        let peeked = current?.next;
-        while (current?.val != item && current != undefined) {
-            if (current.next == this.tail) {
-                break;
-            }
+        this.length--;
+        if (current?.val == item) {
+            let head = this.head?.next;
+            current!.next = undefined;
+            this.head = head;
+        }
+
+        while (current?.next?.val != item) {
             current = current?.next;
         }
-
-        if (current == this.head) {
-            let head = this.head;
-            this.head = this.head?.next;
-            head!.next = undefined;
-            return head?.val;
+        if (current === this.tail) {
+            console.log("item not found");
+            this.length++;
+            return undefined;
         }
-
         if (current?.next == this.tail) {
             let tail = current?.next;
             current!.next = undefined;
             this.tail = current;
             return tail?.val;
         }
+
+        let to_remove = current.next;
+        current.next = to_remove.next;
+        to_remove.next = undefined;
+        return to_remove.val;
     }
-    get(idx: number): T | undefined {}
-    removeAt(idx: number): T | undefined {}
+    get(idx: number): T | undefined {
+        if (idx < 0 || idx >= this.length) {
+            console.log("idx out of bounds");
+            return undefined;
+        }
+
+        let count = 0;
+        let current = this.head;
+        while (current?.next) {
+            current = current.next;
+            ++count;
+            if (count === idx) return current.val;
+        }
+        console.log("not found");
+        return undefined;
+    }
+    removeAt(idx: number): T | undefined {
+        if (idx < 0 && idx >= this.length) {
+            console.log("idx out of bounds");
+            return undefined;
+        }
+        let current = this.head;
+        if (idx === 0) {
+            this.head = this.head?.next;
+            current!.next = undefined;
+            return current?.val;
+        }
+        let count = 0;
+        while (current?.next) {
+            ++count;
+            if (count === idx) {
+                if (current.next === this.tail) {
+                    let tail = this.tail;
+                    this.tail = current;
+                    this.tail.next = undefined;
+                    return tail.val;
+                }
+
+                let to_remove = current.next;
+                current.next = to_remove.next;
+                to_remove.next = undefined;
+                return to_remove.val;
+            }
+        }
+        return undefined;
+    }
 }
 {
 }
