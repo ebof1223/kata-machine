@@ -1,8 +1,8 @@
 const dir = [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
     [0, 1],
+    [1, 0],
+    [-1, 0],
+    [0, -1],
 ];
 
 type Point = {
@@ -18,49 +18,33 @@ function walk(
     seen: boolean[][],
     path: Point[],
 ): boolean {
-    //base
-
-    //out of bounds
     if (
-        curr.x < 0 ||
-        curr.x >= maze[0].length ||
         curr.y < 0 ||
-        curr.y >= maze[0].length
+        curr.y >= maze.length ||
+        curr.x < 0 ||
+        curr.x >= maze[0].length
     )
         return false;
 
-    //wall
     if (maze[curr.y][curr.x] === wall) return false;
 
-    //seen before
     if (seen[curr.y][curr.x]) return false;
 
-    //reached the end
-    if (curr.y === end.y && curr.x == end.x) {
+    if (curr.x === end.x && curr.y === end.y) {
         path.push(end);
         return true;
     }
 
-    //pre
     seen[curr.y][curr.x] = true;
     path.push(curr);
 
     for (let i = 0; i < dir.length; ++i) {
         const [x, y] = dir[i];
         if (
-            walk(
-                maze,
-                wall,
-                {
-                    x: curr.x + x,
-                    y: curr.y + y,
-                },
-                end,
-                seen,
-                path,
-            )
-        )
+            walk(maze, wall, { x: curr.x + x, y: curr.y + y }, end, seen, path)
+        ) {
             return true;
+        }
     }
     path.pop();
     return false;
@@ -72,12 +56,11 @@ export default function solve(
     start: Point,
     end: Point,
 ): Point[] {
-    const seen: boolean[][] = [];
-    const path: Point[] = [];
-
+    let seen_matrix = [];
     for (let i = 0; i < maze.length; ++i) {
-        seen.push(new Array(maze[0].length).fill(false));
+        seen_matrix.push(new Array(maze[0].length).fill(false));
     }
-    walk(maze, wall, start, end, seen, path);
+    let path: Point[] = [];
+    walk(maze, wall, start, end, seen_matrix, path);
     return path;
 }
