@@ -173,5 +173,3 @@ export default class SinglyLinkedList<T> {
         return old_node?.val;
     }
 }
-{
-}
